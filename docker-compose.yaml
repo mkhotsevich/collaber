@@ -34,7 +34,7 @@ services:
     image: postgres:14-alpine
     restart: always
     environment:
-      POSTGRES_DB: 'collaber'
+      POSTGRES_DB: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
     ports:
       - 5432:5432
