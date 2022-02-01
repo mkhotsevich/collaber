@@ -1,5 +1,8 @@
 version: '3.8'
 
+volumes:
+  postgres_data:
+
 services:
   frontend:
     build: ./frontend
@@ -11,3 +14,41 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    depends_on:
+      - backend
+      - postgres
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: 'collaber'
+      POSTGRES_PASSWORD: 'postgres'
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mkhotsevich@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: mkhotsevich
+    ports:
+      - 5050:80
+    depends_on:
+      - postgres
